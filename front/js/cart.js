@@ -62,6 +62,22 @@ function createItemContent(item) {
     return divContent;
 }
 
+
+// Création fonction pour récupérer les prix depuis API
+function itemsPrices(item) {
+    let priceText = document.createElement('p');
+    // Recherche prix dans l'API
+    let itemPrice = products.find(product => product.id == item.id);
+    if (itemPrice) {
+        itemPrice = itemPrice.price;
+        priceText.textContent = `${itemPrice}€`;
+    } else {
+        console.log('Pas de prix')
+    }
+    console.log(products);
+    return priceText;
+}
+
 // Création de la div description du produit
 function createItemDescription(item) {
     let divDesc = document.createElement('div');
@@ -72,11 +88,7 @@ function createItemDescription(item) {
     let color = document.createElement('p');
     color.textContent = item.color;
 
-    //Récupération du prix depuis API
-    
-
-    let price = document.createElement('p');
-    price.textContent = 50;
+    let price = itemsPrices(item);
 
     divDesc.appendChild(title);
     divDesc.appendChild(color);
@@ -136,5 +148,22 @@ function settingsDelete() {
 }
 
 
-// Fonction pour calculer la quantité totale d'articles du panier
-    let totalQuantityID = document.getElementById('#totalQuantity');
+
+// Récupérer l'élément span
+let totalQuantityID = document.getElementById('totalQuantity');
+let totalQuantity = 0;
+// Récupération des éléments du localStorage
+let items = JSON.parse(localStorage.getItem('cart'));
+// Boucle sur le localStorage et ajout de leur quantité à la variable totalQuantity puis assignation au span correspondant
+for (let i = 0; i < items.length; i++) {
+  totalQuantity += items[i].quantity;
+}
+totalQuantityID.textContent = totalQuantity;
+
+// Début même chose pour prix total
+let totalPriceID = document.getElementById('totalPrice');
+let totalPrice = 0
+for (let i = 0; i < items.length; i++) {
+    totalPrice += items[i].price;
+}
+totalPriceID.textContent = totalPrice;
