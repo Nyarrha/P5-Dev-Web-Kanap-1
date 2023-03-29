@@ -67,14 +67,12 @@ function createItemContent(item) {
 function itemsPrices(item) {
     let priceText = document.createElement('p');
     // Recherche prix dans l'API
-    let itemPrice = products.find(product => product.id == item.id);
-    if (itemPrice) {
-        itemPrice = itemPrice.price;
-        priceText.textContent = `${itemPrice}€`;
+    let product = products.find(product => product._id === item.id);
+    if (product.price) {
+        priceText.textContent = `${product.price}€`;
     } else {
         console.log('Pas de prix')
     }
-    console.log(products);
     return priceText;
 }
 
@@ -126,7 +124,16 @@ function createSettingsQuantity(item) {
     quantityButton.name = 'itemQuantity';
     quantityButton.min = '1';
     quantityButton.max = '100';
-    quantityButton.value = parseInt(item.quantityChoice);
+    quantityButton.value = parseInt(item.quantity);
+
+    quantityButton.addEventListener('change', (event) => {
+        const input = event.target;
+        const article = input.closest('article');
+        let itemFound = cart.find(item => article.dataset.id == item.id && article.dataset.color == item.color);
+        itemFound.quantity = parseInt(input.value);
+        window.localStorage.setItem('cart', JSON.stringify(cart));
+        displayTotals();
+    })
 
     settingsQuantity.appendChild(quantityText);
     settingsQuantity.appendChild(quantityButton);
@@ -142,28 +149,36 @@ function settingsDelete() {
     let settingsDeleteText = document.createElement('p');
     settingsDeleteText.textContent = 'Supprimer';
 
+    settingsDeleteText.addEventListener('click', (event) => {
+        const input = event.target;
+        const article = input.closest('article');
+        let itemFound = cart.find(item => article.dataset.id == item.id && article.dataset.color == item.color);
+        cart.remove(input);
+        window.localStorage.setItem('cart', JSON.stringify(cart));
+        displayTotals();
+    })
+
     settingsDelete.appendChild(settingsDeleteText);
 
     return settingsDelete;
 }
 
 
-
+function displayTotals(){
+let cart = JSON.parse(window.localStorage.getItem('cart')) ?? [];
 // Récupérer l'élément span
 let totalQuantityID = document.getElementById('totalQuantity');
 let totalQuantity = 0;
-// Récupération des éléments du localStorage
-let items = JSON.parse(localStorage.getItem('cart'));
-// Boucle sur le localStorage et ajout de leur quantité à la variable totalQuantity puis assignation au span correspondant
-for (let i = 0; i < items.length; i++) {
-  totalQuantity += items[i].quantity;
-}
-totalQuantityID.textContent = totalQuantity;
-
-// Début même chose pour prix total
 let totalPriceID = document.getElementById('totalPrice');
 let totalPrice = 0
-for (let i = 0; i < items.length; i++) {
-    totalPrice += items[i].price;
+// Boucle sur le localStorage et ajout de leur quantité à la variable totalQuantity puis assignation au span correspondant
+for (const item of cart) {
+  totalQuantity += item.quantity;
+  let product = products.find(product => product._id == item.id);
+  totalPrice += item.quantity * product.price;
 }
+totalQuantityID.textContent = totalQuantity;
 totalPriceID.textContent = totalPrice;
+}
+
+displayTotals();
