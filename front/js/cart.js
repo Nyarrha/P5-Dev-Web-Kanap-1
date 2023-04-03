@@ -126,6 +126,7 @@ function createSettingsQuantity(item) {
     quantityButton.max = '100';
     quantityButton.value = parseInt(item.quantity);
 
+    // Evènement lors du changement de la valeur de la quantité, ajoutant celle-ci à la quantité de base du panier
     quantityButton.addEventListener('change', (event) => {
         const input = event.target;
         const article = input.closest('article');
@@ -149,12 +150,13 @@ function settingsDelete() {
     let settingsDeleteText = document.createElement('p');
     settingsDeleteText.textContent = 'Supprimer';
 
+    // Evènement au clic du texte "Supprimer" pour retirer l'article du panier
     settingsDeleteText.addEventListener('click', (event) => {
         const input = event.target;
         const article = input.closest('article');
-        let itemFound = cart.find(item => article.dataset.id == item.id && article.dataset.color == item.color);
-        cart.remove(input);
+        cart = cart.filter(item => !(article.dataset.id == item.id && article.dataset.color == item.color));
         window.localStorage.setItem('cart', JSON.stringify(cart));
+        article.remove();
         displayTotals();
     })
 
@@ -171,7 +173,7 @@ let totalQuantityID = document.getElementById('totalQuantity');
 let totalQuantity = 0;
 let totalPriceID = document.getElementById('totalPrice');
 let totalPrice = 0
-// Boucle sur le localStorage et ajout de leur quantité à la variable totalQuantity puis assignation au span correspondant
+// Boucle sur le localStorage et ajout de la quantité et le prix total puis assignation au span correspondant
 for (const item of cart) {
   totalQuantity += item.quantity;
   let product = products.find(product => product._id == item.id);
@@ -182,3 +184,95 @@ totalPriceID.textContent = totalPrice;
 }
 
 displayTotals();
+
+// **************************** //
+
+// Expressions Régulières
+
+// Récupération formulaire
+let form = document.querySelector('.cart__order__form');
+
+// Ajout évènement qui vérifie le prénom entré par l'utilisateur
+form.firstName.addEventListener('change', function() {
+    validFirstName(this);
+})
+
+// Fonction appelée pour vérification contenu champ "prénom"
+function validFirstName(inputFirstName) {
+    const firstNameError = document.querySelector('#firstNameErrorMsg');
+    let firstNameRegExp = new RegExp('^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ-]{2, 18}$', 'g');
+    if (firstNameRegExp.test(inputFirstName)) {
+        firstNameError.innerHTML = '';
+    } else {
+        firstNameError.textContent = 'Veuillez donner un prénom valide.';
+    }
+    return;
+}
+
+// Ajout évènement nom utilisateur
+form.lastName.addEventListener('change', function(){
+    validLastName(this);
+})
+
+// Fonction appelée vérification champ "nom"
+function validLastName(inputLastName) {
+    const lastNameError = document.querySelector('#lastNameErrorMsg');
+    let lastNameRegExp = new RegExp('^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ-]{2, 18}$', 'g');
+    if (lastNameRegExp.test(inputLastName)) {
+        lastNameError.innerHTML = '';
+    } else {
+        lastNameError.textContent = 'Veuillez donner un nom valide.';
+    }
+    return;
+}
+
+// Ajout évènement adresse utilisateur
+form.address.addEventListener('change', function(){
+    validAddressName(this);
+})
+
+// Fonction appelée vérification champ "adresse"
+function validAddressName(inputAddress) {
+    const addressError = document.querySelector('#addressErrorMsg');
+    let addressRegExp = new RegExp('^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ-]{2, 18}$', 'g');
+    if (addressRegExp.test(inputAddress)) {
+        addressError.innerHTML = '';
+    } else {
+        addressError.textContent = 'Veuillez donner une adresse valide.';
+    }
+    return;
+}
+
+// Ajout évènement ville utilisateur
+form.city.addEventListener('change', function(){
+    validCityName(this);
+})
+
+// Fonction appelée vérification champ "ville"
+function validCityName(inputCity) {
+    const cityError = document.querySelector('#cityErrorMsg');
+    let cityRegExp = new RegExp('^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ-]{2, 18}$', 'g');
+    if (cityRegExp.test(inputCity)) {
+        cityError.innerHTML = '';
+    } else {
+        cityError.textContent = 'Veuillez donner une ville valide.';
+    }
+    return;
+}
+
+// Ajout évènement adresse utilisateur
+form.email.addEventListener('change', function(){
+    validEmailName(this);
+})
+
+// Fonction appelée vérification champ "adresse"
+function validEmailName(inputEmail) {
+    const emailError = document.querySelector('#emailErrorMsg');
+    let emailRegExp = new RegExp('^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ-]{2, 18}$', 'g');
+    if (emailRegExp.test(inputEmail)) {
+        emailError.innerHTML = '';
+    } else {
+        emailError.textContent = 'Veuillez donner une adresse email valide.';
+    }
+    return;
+}
