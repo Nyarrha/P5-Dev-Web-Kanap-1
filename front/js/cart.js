@@ -200,7 +200,7 @@ form.firstName.addEventListener('change', function() {
 // Fonction appelée pour vérification contenu champ "prénom"
 function validFirstName(inputFirstName) {
     const firstNameError = document.querySelector('#firstNameErrorMsg');
-    let firstNameRegExp = new RegExp('^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ-]{2, 18}$', 'g');
+    let firstNameRegExp = new RegExp('^[A-Z]{1,2}[a-z]{2,15}[áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ]{0,4}-$', 'g');
     if (firstNameRegExp.test(inputFirstName)) {
         firstNameError.innerHTML = '';
     } else {
@@ -217,7 +217,7 @@ form.lastName.addEventListener('change', function(){
 // Fonction appelée vérification champ "nom"
 function validLastName(inputLastName) {
     const lastNameError = document.querySelector('#lastNameErrorMsg');
-    let lastNameRegExp = new RegExp('^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ-]{2, 18}$', 'g');
+    let lastNameRegExp = new RegExp('^[A-Z]{1,2}[a-z]{2,15}[áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ]{0,4}-$', 'g');
     if (lastNameRegExp.test(inputLastName)) {
         lastNameError.innerHTML = '';
     } else {
