@@ -193,14 +193,14 @@ displayTotals();
 let form = document.querySelector('.cart__order__form');
 
 // Ajout évènement qui vérifie le prénom entré par l'utilisateur
-form.firstName.addEventListener('change', function() {
-    validFirstName(this);
+form.firstName.addEventListener('change', function(event) {
+    validFirstName(event.target.value);
 })
 
 // Fonction appelée pour vérification contenu champ "prénom"
 function validFirstName(inputFirstName) {
     const firstNameError = document.querySelector('#firstNameErrorMsg');
-    let firstNameRegExp = new RegExp('^[A-Z]{1,2}[a-z]{2,15}[áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ]{0,4}-$', 'g');
+    let firstNameRegExp = /^[a-zA-Zéèêëàâäîïôöûüùç\- ]{2,}$/;
     if (firstNameRegExp.test(inputFirstName)) {
         firstNameError.innerHTML = '';
     } else {
@@ -210,14 +210,14 @@ function validFirstName(inputFirstName) {
 }
 
 // Ajout évènement nom utilisateur
-form.lastName.addEventListener('change', function(){
-    validLastName(this);
+form.lastName.addEventListener('change', function(event){
+    validLastName(event.target.value);
 })
 
 // Fonction appelée vérification champ "nom"
 function validLastName(inputLastName) {
     const lastNameError = document.querySelector('#lastNameErrorMsg');
-    let lastNameRegExp = new RegExp('^[A-Z]{1,2}[a-z]{2,15}[áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ]{0,4}-$', 'g');
+    let lastNameRegExp = /^[a-zA-Zéèêëàâäîïôöûüùç\- ]{2,}$/;
     if (lastNameRegExp.test(inputLastName)) {
         lastNameError.innerHTML = '';
     } else {
@@ -227,14 +227,14 @@ function validLastName(inputLastName) {
 }
 
 // Ajout évènement adresse utilisateur
-form.address.addEventListener('change', function(){
-    validAddressName(this);
+form.address.addEventListener('change', function(event){
+    validAddressName(event.target.value);
 })
 
 // Fonction appelée vérification champ "adresse"
 function validAddressName(inputAddress) {
     const addressError = document.querySelector('#addressErrorMsg');
-    let addressRegExp = new RegExp('^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ-]{2, 18}$', 'g');
+    let addressRegExp = /^[1-9]{2,3}[a-zA-Zéèêëàâäîïôöûüùç,\-. ]{2,}$/;
     if (addressRegExp.test(inputAddress)) {
         addressError.innerHTML = '';
     } else {
@@ -244,14 +244,14 @@ function validAddressName(inputAddress) {
 }
 
 // Ajout évènement ville utilisateur
-form.city.addEventListener('change', function(){
-    validCityName(this);
+form.city.addEventListener('change', function(event){
+    validCityName(event.target.value);
 })
 
 // Fonction appelée vérification champ "ville"
 function validCityName(inputCity) {
     const cityError = document.querySelector('#cityErrorMsg');
-    let cityRegExp = new RegExp('^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ-]{2, 18}$', 'g');
+    let cityRegExp = /^[a-zA-Zéèêëàâäîïôöûüùç\- ]{2,}$/;
     if (cityRegExp.test(inputCity)) {
         cityError.innerHTML = '';
     } else {
@@ -261,14 +261,14 @@ function validCityName(inputCity) {
 }
 
 // Ajout évènement adresse utilisateur
-form.email.addEventListener('change', function(){
-    validEmailName(this);
+form.email.addEventListener('change', function(event){
+    validEmailName(event.target.value);
 })
 
 // Fonction appelée vérification champ "adresse"
 function validEmailName(inputEmail) {
     const emailError = document.querySelector('#emailErrorMsg');
-    let emailRegExp = new RegExp('^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ-]{2, 18}$', 'g');
+    let emailRegExp = /^[a-zA-Z1-9\-_.]*@[a-zA-Z1-9]*.[a-z]*$/;
     if (emailRegExp.test(inputEmail)) {
         emailError.innerHTML = '';
     } else {
@@ -276,3 +276,35 @@ function validEmailName(inputEmail) {
     }
     return;
 }
+
+// ******************** //
+
+// Envoi formulaire valide
+
+const formSelect = document.querySelector('.cart__order__form');
+
+formSelect.addEventListener('submit', function(event){
+    event.preventDefault();
+
+    const productsData = JSON.parse(window.localStorage.getItem('cart'));
+    const formData = {
+        contact: {
+            firstName: event.target.querySelector('#firstName').value,
+            lastName: event.target.querySelector('#lastName').value,
+            address: event.target.querySelector('#address').value,
+            city: event.target.querySelector('#city').value,
+            email: event.target.querySelector('#email').value
+        },
+        products: productsData
+    }
+
+    const chargeUtile = JSON.stringify(formData);
+
+    fetch('http://localhost:3000/api/products/order', {
+        method : "POST",
+        headers: { "Content-Type": "application/json" },
+        body : chargeUtile
+    })
+    .then(response => console.log(response))
+    .catch(error => console.log('Error: ' + error))
+})
