@@ -279,11 +279,19 @@ function validEmailName(inputEmail) {
 
 // ******************** //
 
+// let submitBtn = document.querySelector('button[type="submit"]');
+
+// form.addEventListener('input', function(){
+//     if(!form.firstName.value || !form.lastName.value || !form.address.value || !form.city.value || !form.email.value) {
+//         submitBtn.disabled = true;
+//     } else {
+//         submitBtn.disabled = false;
+//     }
+// })
+
 // Envoi formulaire valide
 
-const formSelect = document.querySelector('.cart__order__form');
-
-formSelect.addEventListener('submit', function(event){
+form.addEventListener('submit', function(event){
     event.preventDefault();
 
     const productsData = JSON.parse(window.localStorage.getItem('cart'));
