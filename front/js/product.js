@@ -91,9 +91,11 @@ button.addEventListener('click', (e) => {
         'imageUrl' : imgUrl,
         'altTxt' : altText
         }
-        // Appel d'un tableau contenant les objets à stocker(ou création d'un tableau vide s'il n'y en a pas déjà un)
+        // Appel d'un tableau contenant les objets à stocker
+        // (ou création d'un tableau vide s'il n'y en a pas déjà un)
         let cart = JSON.parse(window.localStorage.getItem('cart')) ?? [];
-        // Recherche id et couleurs identiques existant dans tableau d'objets, puis ajout objet s'il n'existe pas, ou addition quantités s'il existe déjà
+        // Recherche id et couleurs identiques existant dans tableau d'objets, 
+        // puis ajout objet s'il n'existe pas, ou addition quantités s'il existe déjà
         let productFound = cart.find(item => id == item.id && colorChoice == item.color);
         if (productFound == undefined){
             cart.push(data);

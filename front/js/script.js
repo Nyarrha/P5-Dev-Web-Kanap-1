@@ -1,6 +1,5 @@
 const kanapsList = document.getElementById('items');
 const url = 'http://localhost:3000/api/products/';
-let html = '';
 
 // Fonction créant le lien vers la page produit de l'objet
 function createLink(kanap) {

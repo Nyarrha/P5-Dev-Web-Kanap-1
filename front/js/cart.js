@@ -4,14 +4,15 @@ let res = await fetch(url);
 let products = await res.json();
 
 
-
+// Boucle création items du panier
 for (const item of cart) {
     createCartItem(item);
 }
 
+// Fonction création item panier
 function createCartItem(item) {
     let section = document.querySelector('#cart__items')
-    // Appel fonctions pour créer l'item panier
+    // Appel fonctions pour créer éléments de l'item panier
     let article = createArticle(item);
     let image = createImage(item);
     let itemsContent = createItemContent(item);
@@ -268,7 +269,7 @@ form.email.addEventListener('change', function(event){
 // Fonction appelée vérification champ "adresse"
 function validEmailName(inputEmail) {
     const emailError = document.querySelector('#emailErrorMsg');
-    let emailRegExp = /^[a-zA-Z1-9\-_.]*@[a-zA-Z1-9]*.[a-z]*$/;
+    let emailRegExp = /^[a-zA-Z1-9\-_.]*@[a-zA-Z1-9]*\.{1}[a-z]*$/;
     if (emailRegExp.test(inputEmail)) {
         emailError.innerHTML = '';
     } else {
@@ -279,22 +280,20 @@ function validEmailName(inputEmail) {
 
 // ******************** //
 
-// let submitBtn = document.querySelector('button[type="submit"]');
-
-// form.addEventListener('input', function(){
-//     if(!form.firstName.value || !form.lastName.value || !form.address.value || !form.city.value || !form.email.value) {
-//         submitBtn.disabled = true;
-//     } else {
-//         submitBtn.disabled = false;
-//     }
-// })
-
 // Envoi formulaire valide
 
+// Evènement clic bouton "Commander"
 form.addEventListener('submit', function(event){
     event.preventDefault();
 
-    const productsData = JSON.parse(window.localStorage.getItem('cart'));
+    // Création tableau pour récupérer l'id des produits du localStorage
+    let cartIds = [];
+    for(let item of cart){
+        cartIds.push(item.id);
+    }
+    cartIds = [... new Set(cartIds)]
+
+    // Création objet contenant informations client/commande(id produit)
     const formData = {
         contact: {
             firstName: event.target.querySelector('#firstName').value,
@@ -303,16 +302,25 @@ form.addEventListener('submit', function(event){
             city: event.target.querySelector('#city').value,
             email: event.target.querySelector('#email').value
         },
-        products: productsData
+        products: cartIds
     }
 
     const chargeUtile = JSON.stringify(formData);
-
-    fetch('http://localhost:3000/api/products/order', {
-        method : "POST",
-        headers: { "Content-Type": "application/json" },
-        body : chargeUtile
+    
+    // Envoi de l'objet ci-dessus à l'API via méthode POST et redirection vers page confirmation
+    if(validFirstName(inputFirstName) && validLastName(inputLastName) && 
+        validAddressName(inputAddress) && validCityName(inputCity) && 
+        validEmailName(inputEmail)){
+            fetch("http://localhost:3000/api/products/order", {
+            method : "POST",
+            headers: { "Content-Type": "application/json" },
+            body : chargeUtile
+        })
+        .then(response => response.json())
+        // Promise de redirection vers page confirmation avec orderId comme paramètre
+        .then(data => window.location.href = `./confirmation.html?orderId=${data.orderId}`)
+        .catch(error => console.log('Error: ' + error))
+        }
     })
-    .then(response => console.log(response))
-    .catch(error => console.log('Error: ' + error))
-})
+
+// NOTE : DEBUG BOUTON VALIDATION VERIFIER DONNEES AVANT REDIRECTION
