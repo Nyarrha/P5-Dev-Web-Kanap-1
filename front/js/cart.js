@@ -166,7 +166,7 @@ function settingsDelete() {
     return settingsDelete;
 }
 
-
+// Fonction calculs totaux quantité & prix
 function displayTotals(){
 let cart = JSON.parse(window.localStorage.getItem('cart')) ?? [];
 // Récupérer l'élément span
@@ -336,5 +336,3 @@ form.addEventListener('submit', function(event){
             alert('Veuillez remplir les champs avec des informations valides');
         }
     })
-
-// NOTE : DEBUG BOUTON VALIDATION VERIFIER DONNEES AVANT REDIRECTION
