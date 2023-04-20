@@ -200,14 +200,16 @@ form.firstName.addEventListener('change', function(event) {
 
 // Fonction appelée pour vérification contenu champ "prénom"
 function validFirstName(inputFirstName) {
+    let ret = false;
     const firstNameError = document.querySelector('#firstNameErrorMsg');
     let firstNameRegExp = /^[a-zA-Zéèêëàâäîïôöûüùç\- ]{2,}$/;
     if (firstNameRegExp.test(inputFirstName)) {
         firstNameError.innerHTML = '';
+        ret = true;
     } else {
         firstNameError.textContent = 'Veuillez donner un prénom valide.';
     }
-    return;
+    return ret;
 }
 
 // Ajout évènement nom utilisateur
@@ -217,14 +219,16 @@ form.lastName.addEventListener('change', function(event){
 
 // Fonction appelée vérification champ "nom"
 function validLastName(inputLastName) {
+    let ret = false;
     const lastNameError = document.querySelector('#lastNameErrorMsg');
     let lastNameRegExp = /^[a-zA-Zéèêëàâäîïôöûüùç\- ]{2,}$/;
     if (lastNameRegExp.test(inputLastName)) {
         lastNameError.innerHTML = '';
+        ret = true;
     } else {
         lastNameError.textContent = 'Veuillez donner un nom valide.';
     }
-    return;
+    return ret;
 }
 
 // Ajout évènement adresse utilisateur
@@ -234,14 +238,16 @@ form.address.addEventListener('change', function(event){
 
 // Fonction appelée vérification champ "adresse"
 function validAddressName(inputAddress) {
+    let ret = false;
     const addressError = document.querySelector('#addressErrorMsg');
     let addressRegExp = /^[1-9]{2,3}[a-zA-Zéèêëàâäîïôöûüùç,\-. ]{2,}$/;
     if (addressRegExp.test(inputAddress)) {
         addressError.innerHTML = '';
+        ret = true;
     } else {
         addressError.textContent = 'Veuillez donner une adresse valide.';
     }
-    return;
+    return ret;
 }
 
 // Ajout évènement ville utilisateur
@@ -251,14 +257,16 @@ form.city.addEventListener('change', function(event){
 
 // Fonction appelée vérification champ "ville"
 function validCityName(inputCity) {
+    let ret = false;
     const cityError = document.querySelector('#cityErrorMsg');
     let cityRegExp = /^[a-zA-Zéèêëàâäîïôöûüùç\- ]{2,}$/;
     if (cityRegExp.test(inputCity)) {
         cityError.innerHTML = '';
+        ret = true;
     } else {
         cityError.textContent = 'Veuillez donner une ville valide.';
     }
-    return;
+    return ret;
 }
 
 // Ajout évènement adresse utilisateur
@@ -268,14 +276,16 @@ form.email.addEventListener('change', function(event){
 
 // Fonction appelée vérification champ "adresse"
 function validEmailName(inputEmail) {
+    let ret = false;
     const emailError = document.querySelector('#emailErrorMsg');
     let emailRegExp = /^[a-zA-Z1-9\-_.]*@[a-zA-Z1-9]*\.{1}[a-z]*$/;
     if (emailRegExp.test(inputEmail)) {
         emailError.innerHTML = '';
+        ret = true;
     } else {
         emailError.textContent = 'Veuillez donner une adresse email valide.';
     }
-    return;
+    return ret;
 }
 
 // ******************** //
@@ -308,9 +318,11 @@ form.addEventListener('submit', function(event){
     const chargeUtile = JSON.stringify(formData);
     
     // Envoi de l'objet ci-dessus à l'API via méthode POST et redirection vers page confirmation
-    if(validFirstName(inputFirstName) && validLastName(inputLastName) && 
-        validAddressName(inputAddress) && validCityName(inputCity) && 
-        validEmailName(inputEmail)){
+    if(validFirstName(formData.contact.firstName) &&
+         validLastName(formData.contact.lastName) && 
+        validAddressName(formData.contact.address) &&
+         validCityName(formData.contact.city) && 
+        validEmailName(formData.contact.email)){
             fetch("http://localhost:3000/api/products/order", {
             method : "POST",
             headers: { "Content-Type": "application/json" },
@@ -320,6 +332,8 @@ form.addEventListener('submit', function(event){
         // Promise de redirection vers page confirmation avec orderId comme paramètre
         .then(data => window.location.href = `./confirmation.html?orderId=${data.orderId}`)
         .catch(error => console.log('Error: ' + error))
+        } else {
+            alert('Veuillez remplir les champs avec des informations valides');
         }
     })
 
